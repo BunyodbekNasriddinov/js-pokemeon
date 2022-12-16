@@ -1,5 +1,7 @@
 var elBody = document.querySelector("body");
 var elList = document.querySelector(".js-list");
+var elForm = document.querySelector(".js-form");
+var elInput = document.querySelector(".js-input");
 var elSelect = document.querySelector(".js-select");
 
 elBody.style.background =
@@ -44,6 +46,8 @@ function createCardListItem(array, node) {
   }
 }
 
+createCardListItem(pokemons, elList);
+
 var sortPokemons = [];
 var pokemonsTypes = [];
 
@@ -80,4 +84,31 @@ elSelect.addEventListener("change", (evt) => {
   createCardListItem(sortPokemons, elList);
 });
 
-createCardListItem(pokemons, elList);
+let searchPokemons = [];
+
+elForm.addEventListener("input", (evt) => {
+  evt.preventDefault();
+  let elInputVal = elInput.value;
+
+  if (+elInputVal > pokemons.length) {
+    return (elList.innerHTML =
+      '<li><h1 class="h1 text-center text-danger">NOT FOUND!</h1></li>');
+  }
+
+  pokemons.forEach((el) => {
+    if (typeof +elInputVal === "number") {
+      if (+elInputVal == el.id) searchPokemons.push(el);
+    }
+
+    if (typeof elInputVal === "string") {
+      if (
+        el.name.toLowerCase().includes(elInputVal.toLowerCase()) ||
+        el.name.toUpperCase().includes(elInputVal.toUpperCase())
+      )
+        searchPokemons.push(el);
+    }
+  });
+
+  createCardListItem(searchPokemons, elList);
+  searchPokemons = [];
+});

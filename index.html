@@ -14,17 +14,25 @@
     <div class="container">
       <div class="d-flex">
         <img
-          class="mx-auto"
           width="800"
           height="221"
           src="./images/pokemon-text-bgi.png"
           alt="pokemon text bgi"
         />
-        <select
-          class="form-select ms-auto me-5 w-25 h-25 js-select text-bg-danger mt-4"
-        >
-          <option value="All">All</option>
-        </select>
+        <div class="ms-auto">
+          <select class="form-select my-3 js-select text-bg-danger mt-4">
+            <option value="All">All</option>
+          </select>
+          <form class="js-form" method="post">
+            <input
+              class="btn fs-5 bg-white text-danger js-input"
+              type="search"
+              placeholder="Search pokemon"
+              autofocus
+            />
+            <button class="btn btn-primary" type="button">Search</button>
+          </form>
+        </div>
       </div>
       <ul
         class="js-list row mt-5 list-unstyled gap-5 justify-content-center"
