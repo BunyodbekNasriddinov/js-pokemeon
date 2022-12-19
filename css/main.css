@@ -1,0 +1,43 @@
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  background-color: red;
+  animation: change 12s ease infinite;
+}
+
+@keyframes change {
+  0% {
+    background-color: blue;
+  }
+  25% {
+    background-color: red;
+  }
+  50% {
+    background-color: darkcyan;
+  }
+  75% {
+    background-color: darkblue;
+  }
+  100% {
+    background-color: yellow;
+  }
+}
+
+main {
+  flex-grow: 1;
+}
+img {
+  vertical-align: middle;
+  object-fit: cover;
+}

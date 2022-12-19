@@ -1,17 +1,18 @@
-var elBody = document.querySelector("body");
-var elList = document.querySelector(".js-list");
-var elForm = document.querySelector(".js-form");
-var elInput = document.querySelector(".js-input");
-var elSelect = document.querySelector(".js-select");
+let elBody = document.querySelector("body");
+let elList = document.querySelector(".js-list");
+let elForm = document.querySelector(".js-form");
+let elInput = document.querySelector(".js-input");
+let elSelect = document.querySelector(".js-select");
+let elSortSelect = document.querySelector(".js-sort-select");
 
-elBody.style.background =
-  "linear-gradient(90deg, rgba(182,219,21,1) 0%, rgba(255,0,44,1) 0%, rgba(255,239,0,1) 49%, rgba(0,212,255,1) 100%)";
+// elBody.style.background =
+//   "linear-gradient(90deg, rgba(182,219,21,1) 0%, rgba(255,0,44,1) 0%, rgba(255,239,0,1) 49%, rgba(0,212,255,1) 100%)";
 
 function createCardListItem(array, node) {
   elList.innerHTML = "";
 
   for (item of array) {
-    var newItemLi = document.createElement("li");
+    let newItemLi = document.createElement("li");
 
     node.appendChild(newItemLi);
 
@@ -46,10 +47,27 @@ function createCardListItem(array, node) {
   }
 }
 
-createCardListItem(pokemons, elList);
+function sortArray(arr, key, reverse) {
+  return arr.sort((a, b) => {
+    if (typeof a[key] === "number") {
+      a = a[key];
+      b = b[key];
+      if (reverse) return b - a;
+      return a - b;
+    }
+    if (typeof a[key] === "string") {
+      a = a[key].toLowerCase().charCodeAt(0);
+      b = b[key].toLowerCase().charCodeAt(0);
+      if (reverse) return b - a;
+      return a - b;
+    }
+  });
+}
 
-var sortPokemons = [];
-var pokemonsTypes = [];
+createCardListItem(pokemons, elList, true);
+
+let sortPokemons = [];
+let pokemonsTypes = [];
 
 pokemons.forEach((poc) => {
   poc.type.forEach((el) => {
@@ -57,7 +75,7 @@ pokemons.forEach((poc) => {
   });
 });
 
-var sortPokemonsTypes = new Set(pokemonsTypes);
+let sortPokemonsTypes = new Set(pokemonsTypes);
 
 sortPokemonsTypes.forEach((el) => {
   elOption = document.createElement("option");
@@ -82,6 +100,23 @@ elSelect.addEventListener("change", (evt) => {
   });
 
   createCardListItem(sortPokemons, elList);
+});
+
+elSortSelect.addEventListener("change", (evt) => {
+  evt.preventDefault();
+
+  let elSortSelectVal = elSortSelect.value;
+
+  if (elSortSelectVal !== "all") {
+    if (elSortSelectVal === "a-z")
+      createCardListItem(sortArray(pokemons, "name"), elList);
+    if (elSortSelectVal === "z-a")
+      createCardListItem(sortArray(pokemons, "name", true), elList);
+    if (elSortSelectVal === "0-9")
+      createCardListItem(sortArray(pokemons, "id"), elList);
+    if (elSortSelectVal === "9-0")
+      createCardListItem(sortArray(pokemons, "id", true), elList);
+  }
 });
 
 let searchPokemons = [];
