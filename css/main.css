@@ -18,19 +18,19 @@ body {
 
 @keyframes change {
   0% {
-    background-color: blue;
+    background-color: #1b7f8e;
   }
   25% {
-    background-color: red;
+    background-color: #365657;
   }
   50% {
-    background-color: darkcyan;
+    background-color: #1c5c5c;
   }
   75% {
-    background-color: darkblue;
+    background-color: #04826b;
   }
   100% {
-    background-color: yellow;
+    background-color: #485f5d;
   }
 }
 
