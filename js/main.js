@@ -14,7 +14,6 @@ function createCardListItem(array, node) {
 
   for (item of array) {
     let newItemLi = document.createElement("li");
-
     node.appendChild(newItemLi);
     newItemLi.dataset.id = item.id;
 
@@ -32,7 +31,7 @@ function createCardListItem(array, node) {
             <img 
               class="me-1 js-favorite-img"
               data-poc-id = "${item.id}"
-              src="./images/favorite-icon.png" 
+              src="./images/favorite-icon.png"
               width="35" 
               height="35"
               ></button>
@@ -89,6 +88,7 @@ window.addEventListener("scroll", () => {
 });
 
 let theme = false;
+let favoriteImgClick = false;
 
 elModeBtn.addEventListener("click", () => {
   theme = !theme;
@@ -228,7 +228,10 @@ elList.addEventListener("click", (evt) => {
   if (evt.target.matches(".js-favorite-img")) {
     const pocId = evt.target.dataset.pocId;
     const findIndex = pokemons.findIndex((el) => el.id == pocId);
-    if (!favoritePok.includes(pokemons[findIndex])) {
+    document.querySelectorAll(".js-favorite-img").forEach((item) => {
+      if (item.dataset.pocId == pocId) item.src = "./images/heart-icon.png";
+    });
+    if (!favoritePok.includes(favoritePok[findIndex])) {
       favoritePok.push(pokemons[findIndex]);
       favoriteRender(favoritePok, elFavoriteList);
     }
@@ -239,9 +242,10 @@ elFavoriteList.addEventListener("click", (evt) => {
   if (evt.target.matches(".js-favorite-delete")) {
     const pocId = +evt.target.dataset.pocId;
     const findIndex = favoritePok.findIndex((el) => el.id === pocId);
+    document.querySelectorAll(".js-favorite-img").forEach((item) => {
+      if (item.dataset.pocId == pocId) item.src = "./images/favorite-icon.png";
+    });
     favoritePok.splice(findIndex, 1);
-    console.log(pocId);
-    console.log(findIndex);
     favoriteRender(favoritePok, elFavoriteList);
   }
 });
