@@ -4,9 +4,10 @@ let elForm = document.querySelector(".js-form");
 let elInput = document.querySelector(".js-input");
 let elSelect = document.querySelector(".js-select");
 let elSortSelect = document.querySelector(".js-sort-select");
-
-// elBody.style.background =
-//   "linear-gradient(90deg, rgba(182,219,21,1) 0%, rgba(255,0,44,1) 0%, rgba(255,239,0,1) 49%, rgba(0,212,255,1) 100%)";
+let elModeBtn = document.querySelector(".js-mode");
+let elScrollBtn = document.querySelector(".js-scroll");
+let elModal = document.querySelector(".js-modal");
+let elFavoriteList = document.querySelector(".js-favorite-list");
 
 function createCardListItem(array, node) {
   elList.innerHTML = "";
@@ -15,35 +16,46 @@ function createCardListItem(array, node) {
     let newItemLi = document.createElement("li");
 
     node.appendChild(newItemLi);
+    newItemLi.dataset.id = item.id;
 
-    newItemLi.classList.add("col-12");
-    newItemLi.classList.add("col-md-6");
-    newItemLi.classList.add("col-lg-3");
-    newItemLi.classList.add("rounded");
-    newItemLi.classList.add("shadow");
-    newItemLi.classList.add("p-3");
-    newItemLi.innerHTML = `<div class="d-flex justify-content-between">
-    <h2 class="h3 text-center" style="color: #${Math.floor(
-      Math.random() * 1000
-    )}">${item.name}</h2>
-      <span class="h4">${item.id}</span>
+    newItemLi.setAttribute(
+      "class",
+      "col-12 col-md-4 col-lg-3 rounded shadow p-3"
+    );
+    newItemLi.innerHTML = `
+    <div class="d-flex justify-content-between">
+      <h2 class="h3 text-center" style="color: #${Math.floor(
+        Math.random() * 1000
+      )}">${item.name}</h2>
+        <span class="h4 text-success">
+          <button class="bg-transparent border-0 js-favorite">
+            <img 
+              class="me-1 js-favorite-img"
+              data-poc-id = "${item.id}"
+              src="./images/favorite-icon.png" 
+              width="35" 
+              height="35"
+              ></button>
+                ${item.id}
+        </span>
       </div>
-      <div class="d-flex">
+      <div class="d-flex justify-content-between">
       <ul class="list-unstyled mt-3">
       <li class="p-1 text-danger fw-semibold">Height: ${item.height}</li>
-      <li class="p-1 text-primary fw-semibold">Weight: ${item.weight}</li>
-      <li class="p-1 text-dark fw-semibold">Type: ${item.type[0]}</li>
-      <li class="p-1 text-dark fw-semibold">Egg: ${item.egg}</li>
-      <li class="p-1 text-light fw-semibold">Candy: ${item.candy}</li>
+      <li class="p-1 text-warning fw-semibold">Weight: ${item.weight}</li>
+      <li class="p-1 text-success fw-semibold">Type: ${item.type[0]}</li>
+      <li class="p-1 text-primary fw-semibold">Egg: ${item.egg}</li>
+      <li class="p-1 text-light fw-semibold">Spawn time: ${item.spawn_time}</li>
       </ul>
       <img
       class="img-fluid offset-1"
-      width="120"
-      height="120"
+      width="150"
+      height="200"
       src="${item.img}"
       alt="Pokemon ${item.name} image"
+      style="object-fit: fill;"
       />
-      </div>`;
+    </div>`;
   }
 }
 
@@ -62,6 +74,40 @@ function sortArray(arr, key, reverse) {
       return a - b;
     }
   });
+}
+
+elModal.addEventListener("click", () => {
+  elFavoriteList.classList.toggle("d-none");
+});
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY >= 700) {
+    elScrollBtn.classList.remove("d-none");
+  } else {
+    elScrollBtn.classList.add("d-none");
+  }
+});
+
+let theme = false;
+
+elModeBtn.addEventListener("click", () => {
+  theme = !theme;
+
+  let bg = theme ? "dark" : "light";
+  localStorage.setItem("theme", bg);
+  changeTheme();
+});
+
+changeTheme();
+
+function changeTheme() {
+  if (localStorage.getItem("theme") === "dark") {
+    document.querySelector("body").classList.add("dark");
+    elModeBtn.children[0].src = "./images/mode-icon.png";
+  } else {
+    document.querySelector("body").classList.remove("dark");
+    elModeBtn.children[0].src = "./images/mode-icon-dark.png";
+  }
 }
 
 createCardListItem(pokemons, elList, true);
@@ -146,4 +192,55 @@ elForm.addEventListener("input", (evt) => {
 
   createCardListItem(searchPokemons, elList);
   searchPokemons = [];
+});
+
+function favoriteRender(array, node) {
+  node.innerHTML = "";
+  array.forEach((el) => {
+    const newFavLI = document.createElement("li");
+    const newDeleteBtn = document.createElement("button");
+    const newSpan = document.createElement("span");
+
+    newFavLI.setAttribute(
+      "class",
+      "list-group-item w-100 text-start d-flex align-items-center justify-content-between mt-4"
+    );
+    newDeleteBtn.setAttribute(
+      "class",
+      "btn btn-danger ms-5 js-favorite-delete"
+    );
+
+    newDeleteBtn.textContent = "DELETE";
+    newDeleteBtn.dataset.pocId = el.id;
+    newSpan.textContent = `${el.id}. ${el.name}`;
+
+    newFavLI.appendChild(newSpan);
+    newFavLI.appendChild(newDeleteBtn);
+    node.appendChild(newFavLI);
+    localStorage.setItem("favoritePok", JSON.stringify(favoritePok));
+  });
+}
+
+let favoritePok = JSON.parse(localStorage.getItem("favoritePok")) || [];
+
+favoriteRender(favoritePok, elFavoriteList);
+
+elList.addEventListener("click", (evt) => {
+  if (evt.target.matches(".js-favorite-img")) {
+    const pocId = evt.target.dataset.pocId;
+    const findIndex = pokemons.findIndex((el) => el.id == pocId);
+    if (!favoritePok.includes(pokemons[findIndex])) {
+      favoritePok.push(pokemons[findIndex]);
+      favoriteRender(favoritePok, elFavoriteList);
+    }
+  }
+});
+
+elFavoriteList.addEventListener("click", (evt) => {
+  if (evt.target.matches(".js-favorite-delete")) {
+    const pocId = evt.target.dataset.pocId;
+    const findIndex = pokemons.findIndex((el) => el.id == pocId);
+    favoritePok.splice(findIndex, 1);
+    favoriteRender(favoritePok, elFavoriteList);
+  }
 });
