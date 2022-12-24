@@ -209,6 +209,7 @@ function favoriteRender(array, node) {
       "class",
       "btn btn-danger ms-5 js-favorite-delete"
     );
+    newSpan.setAttribute("class", "fs-5");
 
     newDeleteBtn.textContent = "DELETE";
     newDeleteBtn.dataset.pocId = el.id;
@@ -223,8 +224,6 @@ function favoriteRender(array, node) {
 
 let favoritePok = JSON.parse(localStorage.getItem("favoritePok")) || [];
 
-favoriteRender(favoritePok, elFavoriteList);
-
 elList.addEventListener("click", (evt) => {
   if (evt.target.matches(".js-favorite-img")) {
     const pocId = evt.target.dataset.pocId;
@@ -238,9 +237,13 @@ elList.addEventListener("click", (evt) => {
 
 elFavoriteList.addEventListener("click", (evt) => {
   if (evt.target.matches(".js-favorite-delete")) {
-    const pocId = evt.target.dataset.pocId;
-    const findIndex = pokemons.findIndex((el) => el.id == pocId);
+    const pocId = +evt.target.dataset.pocId;
+    const findIndex = favoritePok.findIndex((el) => el.id === pocId);
     favoritePok.splice(findIndex, 1);
+    console.log(pocId);
+    console.log(findIndex);
     favoriteRender(favoritePok, elFavoriteList);
   }
 });
+
+favoriteRender(favoritePok, elFavoriteList);
