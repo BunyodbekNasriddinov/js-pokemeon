@@ -203,7 +203,7 @@ function favoriteRender(array, node) {
 
     newFavLI.setAttribute(
       "class",
-      "list-group-item w-100 text-start d-flex align-items-center justify-content-between mt-4"
+      "list-group-item w-100 text-start d-flex align-items-center justify-content-between"
     );
     newDeleteBtn.setAttribute(
       "class",
