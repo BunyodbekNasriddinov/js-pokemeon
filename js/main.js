@@ -17,6 +17,8 @@ function createCardListItem(array, node) {
     node.appendChild(newItemLi);
     newItemLi.dataset.id = item.id;
 
+    Object.assign(pokemons, { isFavorite: false });
+
     newItemLi.setAttribute(
       "class",
       "col-12 col-md-4 col-lg-3 rounded shadow p-3"
@@ -226,14 +228,29 @@ let favoritePok = JSON.parse(localStorage.getItem("favoritePok")) || [];
 
 elList.addEventListener("click", (evt) => {
   if (evt.target.matches(".js-favorite-img")) {
-    const pocId = evt.target.dataset.pocId;
-    const findIndex = pokemons.findIndex((el) => el.id == pocId);
-    document.querySelectorAll(".js-favorite-img").forEach((item) => {
-      if (item.dataset.pocId == pocId) item.src = "./images/heart-icon.png";
-    });
-    if (!favoritePok.includes(favoritePok[findIndex])) {
+    const pocId = +evt.target.dataset.pocId;
+    const findIndex = pokemons.findIndex((el) => el.id === pocId);
+    let favImgs = document.querySelectorAll(".js-favorite-img");
+    if (
+      !pokemons[findIndex].isFavorite &&
+      !favoritePok.find((el) => el.id == pokemons[findIndex].id)
+    ) {
+      favImgs[findIndex].src = "./images/heart-icon.png";
+      pokemons[findIndex].isFavorite = true;
       favoritePok.push(pokemons[findIndex]);
       favoriteRender(favoritePok, elFavoriteList);
+      console.log(favoritePok[findIndex]);
+      console.log("qoshildi");
+    } else {
+      favoritePok.splice(
+        favoritePok.findIndex((el) => el.id == pokemons[findIndex].id),
+        1
+      );
+      favImgs[findIndex].src = "./images/favorite-icon.png";
+      console.log(favoritePok[findIndex]);
+      pokemons[findIndex].isFavorite = false;
+      favoriteRender(favoritePok, elFavoriteList);
+      console.log("ochdi");
     }
   }
 });
